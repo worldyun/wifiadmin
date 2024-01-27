@@ -31,6 +31,7 @@ function init() {
     // console.log(res, parseInt(res.sms_nv_total));
     sms_total.value = parseInt(res.sms_nv_total);
     sms_used.value = parseInt(res.sms_nv_draftbox_total) + parseInt(res.sms_nv_rev_total) + parseInt(res.sms_nv_send_total);
+    loading.value = false;
   });
 }
 // 监听 signal 变量的变化

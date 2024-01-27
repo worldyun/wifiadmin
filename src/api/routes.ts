@@ -118,6 +118,14 @@ export const getAsyncRoutes = () => {
     },
     children: [
       {
+        path: "/page/AdvancedSetting/SimSwitch",
+        name: "SimSwitch",
+        meta: {
+          title: "SIM卡选择",
+          roles: ["admin"]
+        }
+      },
+      {
         path: "/page/AdvancedSetting/AT",
         name: "AT",
         meta: {
@@ -154,50 +162,6 @@ export const getAsyncRoutes = () => {
         name: "TR069",
         meta: {
           title: "TR069设置",
-          roles: ["admin"]
-        }
-      }
-    ]
-  }, {
-    path: "/page/SimCard",
-    meta: {
-      title: "卡商相关",
-      icon: "mdi:sim",
-      rank: 5//菜单排序
-    },
-    children: [
-      {
-        path: "/page/SimCard/NetSwitch",
-        name: "NetSwitch",
-        meta: {
-          title: "飞猫网络切换",
-          roles: ["admin"]
-        }
-      },
-      {
-        path: "/page/SimCard/HttpAPI",
-        name: "HttpAPI",
-        meta: {
-          title: "三方API设置",
-          roles: ["admin"]
-        }
-      }
-    ]
-  }, {
-    path: "/Young/my-youth",
-    meta: {
-      title: "我的青春",
-      icon: "mingcute:web-fill",
-      rank: 10,//菜单排序
-      showLink: false// 是否显示该菜单
-    },
-    children: [
-      {
-        path: "/Young/my-youths",
-        name: "my_youth",
-        meta: {
-          title: "我的青春",
-          frameSrc: "https://my-youth.cn/",
           roles: ["admin"]
         }
       }

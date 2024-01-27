@@ -38,7 +38,7 @@ function init() {
   });
 }
 function submitForm() {
-  if (ruleForm.AcsAddress == '') {
+  if (ruleForm.tr069Server == '开启' && ruleForm.AcsAddress == '') {
     return message("ACS地址不能为空", { type: "error" });
   }
   if (ruleForm.InformEnable == '开启' && ruleForm.ReportCycle == '') {

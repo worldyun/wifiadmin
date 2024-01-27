@@ -93,7 +93,9 @@ function submitForm() {
                 </el-form-item>
                 <el-form-item label="网络模式" prop="wifiMode">
                   <el-select v-model="ruleForm.wifiMode" :fit-input-width="true" style="width: 100%;">
-                    <el-option label="802.11 b/g/n" value="4" />
+                    <el-option label="802.11 b/g/n/ax" value="6" /> 
+                    <el-option label="802.11 b/g/n" value="4" /> 
+                    <el-option label="仅 802.11 a" value="5" />
                     <el-option label="仅 802.11 n" value="2" />
                   </el-select>
                 </el-form-item>
