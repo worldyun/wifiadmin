@@ -61,7 +61,7 @@ class PureHttp {
     PureHttp.axiosInstance.interceptors.request.use(
       async (config: PureHttpRequestConfig): Promise<any> => {
         // 判断具体的请求
-        if (!config.url.endsWith("&hide=Young")) {
+        if (!config.url.endsWith("&hide=true")) {
           NProgress.start();// 开启进度条动画
           // console.log('请求拦截', config);
         }

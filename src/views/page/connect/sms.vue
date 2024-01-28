@@ -207,7 +207,7 @@ function send_sms() {
         </el-card>
       </el-col>
     </el-row>
-    <el-dialog id="YoungTable" v-model="dialogTableVisible" title="短信详细" @close="handleClose" align-center>
+    <el-dialog id="sms-details" v-model="dialogTableVisible" title="短信详细" @close="handleClose" align-center>
       <el-form :model="form" status-icon class="demo-ruleForm" label-position="left">
         <el-form-item label="号码">
           <el-input v-model="form.number" type="number" autocomplete="off" />
@@ -231,14 +231,14 @@ function send_sms() {
 </template>
 
 <style>
-#YoungTable {
+#sms-details {
   /* 默认宽度为 50% */
   width: 50%;
 }
 
 /* 在手机上应用不同的宽度 */
 @media (max-width: 767px) {
-  #YoungTable {
+  #sms-details {
     width: 80%;
   }
 }

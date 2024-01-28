@@ -13,8 +13,8 @@ import { postapi, getapi } from "@/api/user";
 defineOptions({
   name: "Other"
 });
-const young_mac = ref('');
-const young_imei = ref('');
+const device_mac = ref('');
+const device_imei = ref('');
 const pwdinfo = ref({ "current_Password": "", "admin_Password": "", "root_Password": "" });
 const activeNames = ref(['1'])
 const ruleFormRef = ref<FormInstance>()
@@ -80,7 +80,7 @@ watchEffect(() => {
   allinfo.value = store.state.NetInfo;
   console.log(allinfo.value);
   if (allinfo.value.imei != '') {
-    young_imei.value = allinfo.value.imei;
+    device_imei.value = allinfo.value.imei;
   }
   if (oldData.value !== null && ruleForm.mgmt_quicken_power_on !== oldData.value) {
     loading.value = true;
@@ -276,7 +276,7 @@ function upmac() {
     }
   ).then(() => {
     loading.value = true;
-    postapi({ 'goformId': 'SET_USB_MAC_ADDRESS', 'mac': young_mac.value }).then(req => {
+    postapi({ 'goformId': 'SET_USB_MAC_ADDRESS', 'mac': device_mac.value }).then(req => {
       loading.value = false;
       if (req.result == "success") {
         message("成功发送请求", { type: "success" });
@@ -301,7 +301,7 @@ function upimei() {
     }
   ).then(() => {
     loading.value = true;
-    postapi({ 'goformId': 'SET_IMEI_NUM', 'imei': young_imei.value }).then(req => {
+    postapi({ 'goformId': 'SET_IMEI_NUM', 'imei': device_imei.value }).then(req => {
       loading.value = false;
       if (req.result == "success") {
         message("成功发送请求", { type: "success" });
@@ -358,14 +358,14 @@ function upimei() {
                   </el-radio-group>
                 </el-form-item>
                 <b>修改USB虚拟网卡物理地址</b>
-                <el-input style="margin-top: 10px;margin-bottom: 10px;" v-model="young_mac" type="text"
+                <el-input style="margin-top: 10px;margin-bottom: 10px;" v-model="device_mac" type="text"
                   autocomplete="off">
                   <template #append>
                     <el-button type="primary" @click="upmac">应用</el-button>
                   </template>
                 </el-input>
                 <b>修改IMEI</b>
-                <el-input style="margin-top: 10px;margin-bottom: 10px;" v-model="young_imei" type="text"
+                <el-input style="margin-top: 10px;margin-bottom: 10px;" v-model="device_imei" type="text"
                   autocomplete="off">
                   <template #append>
                     <el-button type="primary" @click="upimei">应用</el-button>

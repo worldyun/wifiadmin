@@ -7,7 +7,7 @@ import { message } from "@/utils/message";
 import { ElMessageBox } from 'element-plus';
 import { ref, onMounted, watchEffect } from "vue";
 import { formatDataSize, convertToBytes } from "@/views/welcome/components/fun";
-import { getmsglist, getapi, setnet, hexToAscii, convertToDateTime, postapi } from "@/api/user";
+import { getapi, setnet, hexToAscii, convertToDateTime, postapi } from "@/api/user";
 
 const noticesNum = ref(0);
 const notices = ref([{
@@ -23,25 +23,6 @@ const activeKey = ref();
 const store = useStore();
 // notices.value.map(v => (noticesNum.value += v.list.length));//自动计算通知条数
 onMounted(() => {
-  getmsglist().then(data => {
-    // console.log(data);
-    if (data.code == 200) {
-      notices.value = data.info;
-      activeKey.value = data.info[0].key;
-      // notices.value.map(v => (noticesNum.value += v.list.length));//自动计算通知条数
-    }
-  }).catch(error => {
-    notices.value = [{
-      key: "1",
-      name: "短信",
-      list: []
-    }, {
-      key: "2",
-      name: "通知",
-      list: []
-    }];
-    console.log('请求失败');
-  });
   //获取设备流量信息
   getapi('cmd=data_volume_alert_percent%2Cdata_volume_limit_size%2Cdata_volume_limit_unit%2Cmonthly_tx_bytes%2Cmonthly_rx_bytes%2Cmonthly_time%2Cppp_status&multi_data=1', true).then(data => {
     let zong, yz, yy;

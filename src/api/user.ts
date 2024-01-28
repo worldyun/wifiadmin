@@ -84,7 +84,7 @@ export const getapi = (cmd?: string, hide: boolean = false) => {
   };
   let data = '';
   if (hide == true) {
-    data = `?${cmd}&_=${Date.now()}&hide=Young`
+    data = `?${cmd}&_=${Date.now()}&hide=true`
   } else {
     data = `?${cmd}&_=${Date.now()}`
   }
@@ -124,7 +124,7 @@ export const getlanlist = () => {
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
   };
-  const data = `?cmd=lan_station_list&_=${Date.now()}&hide=Young`;
+  const data = `?cmd=lan_station_list&_=${Date.now()}&hide=true`;
   return http.request("get", `${baseUrl}/${getpath('get')}${data}`, { headers });
 };
 
@@ -136,7 +136,7 @@ export const getwifilist = () => {
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
   };
-  const data = `?cmd=station_list&_=${Date.now()}&hide=Young`;
+  const data = `?cmd=station_list&_=${Date.now()}&hide=true`;
 
   return http.request("get", `${baseUrl}/${getpath('get')}${data}`, { headers });
 };
@@ -167,28 +167,6 @@ export const refreshTokenApi = () => {
   };
   return myData;
 };
-
-/** 获取消息列表 */
-export const getmsglist = () => {
-  const { version } = __APP_INFO__.pkg;
-  return http.request("get", 'https://wifi.api.my-youth.cn/?version=' + version);
-};
-
-/** 获取飞猫设备信息 */
-export const fm_get_device_information = (ip?: string) => {
-  return http.request("get", `http://${ip}:8081/fm_get_device_information`);
-};
-
-/** 飞猫设备切卡请求 */
-export const fm_set_device_parameters = (ip?: string, data?: object) => {
-  const headers = {
-    'Accept': 'application/json',
-    'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
-    'Content-Type': 'application/json',
-  };
-  return http.request("post", `http://${ip}:8081/fm_set_device_parameters`, { headers, data });
-};
-//获取解锁密码：http://192.168.0.1/goform/goform_get_cmd_process?cmd=current_Password%2Cadmin_Password%2Croot_Password&multi_data=1
 
 //16进制转字符串
 // 示例用法

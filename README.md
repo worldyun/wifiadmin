@@ -3,6 +3,6 @@
 ## 介绍
 此版本为某个随身Wifi设备定制版, 可能其他型号的设备无法使用, 补齐了Wifi6模式选择, 且增加了切卡功能。
 
-原作者: 小白
+原作者: [小白](https://github.com/Youngolo/wifiadmin)
 - [介绍](https://www.my-youth.cn/2023/08/12/ztewechatportablewifiadmin/)
 # wifiadmin

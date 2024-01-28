@@ -243,9 +243,9 @@ const submitForm = (formEl: FormInstance | undefined) => {
 
     <div v-if="layout === 'vertical'" class="vertical-header-right">
       <!-- 网络类型 -->
-      <div id="yOUNGBY2" class="search-container w-auto h-[48px] flex-c cursor-pointer navbar-bg-hover">
+      <div id="navbar-net-type" class="search-container w-auto h-[48px] flex-c cursor-pointer navbar-bg-hover">
         <el-tooltip :content="`网络类型：${netinfo.sub_network_type}`" placement="top">
-          <el-text id="yOUNGYYYY" v-if="netname" style="margin: 5px;" :class="{ 'dark:text-white': true }"
+          <el-text id="navbar-net-operator" v-if="netname" style="margin: 5px;" :class="{ 'dark:text-white': true }"
             :type="netname === '中国移动' ? 'success' : netname === '中国电信' ? 'primary' : netname === '中国联通' ? 'danger' : ''">
             {{ netname }}
           </el-text>
@@ -273,7 +273,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
         </el-tooltip>
       </div>
       <!-- 菜单搜索 -->
-      <div id="yOUNGBYc">
+      <div id="navbar-search">
         <Search />
       </div>
       <!-- 通知 -->
@@ -301,7 +301,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
         <IconifyIconOffline :icon="Setting" />
       </span>
     </div>
-    <el-dialog id="YoungTable" v-model="centerDialogVisible" title="修改登录密码" align-center @close="handleClose">
+    <el-dialog id="navbar-change-passwd" v-model="centerDialogVisible" title="修改登录密码" align-center @close="handleClose">
       <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" status-icon class="demo-ruleForm" label-width="80"
         label-position="left" v-loading="load_switch">
         <el-form-item label="旧密码" prop="old_pass">
@@ -336,18 +336,18 @@ const submitForm = (formEl: FormInstance | undefined) => {
 
 <style lang="scss" scoped>
 @media (max-width: 400px) {
-  #yOUNGBYc {
+  #navbar-search {
     display: none;
   }
 }
 
 @media (max-width: 330px) {
-  #yOUNGBY2 {
+  #navbar-net-type {
     display: none;
   }
 }
 
-#yOUNGYYYY {
+#navbar-net-operator {
   white-space: nowrap;
   /* 不换行 */
   overflow: hidden;
@@ -358,19 +358,19 @@ const submitForm = (formEl: FormInstance | undefined) => {
   /* 设置最大宽度，以便溢出时生效 */
 }
 
-#yOUNGYYYY::after {
+#navbar-net-operator::after {
   content: attr(data-text);
   /* 通过伪元素展示全部文本内容 */
 }
 
-#YoungTable {
+#navbar-change-passwd {
   /* 默认宽度为 30% */
   width: 30%;
 }
 
 /* 在手机上应用不同的宽度 */
 @media (max-width: 767px) {
-  #YoungTable {
+  #navbar-change-passwd {
     width: 80%;
   }
 }
