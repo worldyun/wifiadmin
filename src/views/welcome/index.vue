@@ -313,13 +313,14 @@ function gotowifilist() {
           <el-scrollbar :height="`calc(${height}px - 35vh - 340px)`">
             <el-descriptions direction="vertical" :column="5" border size="default">
               <el-descriptions-item label="IMEI" :span="2">{{ allinfo.imei }}</el-descriptions-item>
+              <el-descriptions-item label="ICCID" :span="2">{{ store.state.NetInfo.ziccid }}</el-descriptions-item>
               <el-descriptions-item label="信号强度" :min-width="80">{{ allinfo.rssi }} dBm</el-descriptions-item>
+              <el-descriptions-item label="IMSI" :span="2">{{ allinfo.sim_imsi }}</el-descriptions-item>
+              <el-descriptions-item label="运营商">{{ netname }}</el-descriptions-item>
               <el-descriptions-item label="网络名称" :min-width="120" :span="2">{{ newinfo.SSID1 != '' ?
                 newinfo.SSID1 : allinfo.m_SSID
               }}</el-descriptions-item>
-              <el-descriptions-item label="IMSI" :span="2">{{ allinfo.sim_imsi }}</el-descriptions-item>
-              <el-descriptions-item label="运营商">{{ netname }}</el-descriptions-item>
-              <el-descriptions-item label="IP">{{ allinfo.lan_ipaddr }}</el-descriptions-item>
+              <!-- <el-descriptions-item label="IP">{{ allinfo.lan_ipaddr }}</el-descriptions-item> -->
               <!-- <el-descriptions-item label="RSRQ">{{ allinfo.detail_cell_rsrq }}</el-descriptions-item>
               <el-descriptions-item label="SINR">{{ allinfo.detail_cell_sinr }}</el-descriptions-item>
               <el-descriptions-item label="PCI">{{ allinfo.detail_cell_pci }}</el-descriptions-item> -->
@@ -464,7 +465,7 @@ function gotowifilist() {
         </el-card>
       </el-col>
     </el-row>
-    <el-dialog id="YoungTable" v-model="centerDialogVisible" title="流量信息" align-center @close="handleClose">
+    <el-dialog id="net-traffic" v-model="centerDialogVisible" title="流量信息" align-center @close="handleClose">
       <el-table :data="table_list" border v-loading="centerDialogVisible_load">
         <el-table-column prop="name" label="项目" />
         <el-table-column prop="data" label="值" />
@@ -481,14 +482,14 @@ function gotowifilist() {
 </template>
 
 <style lang="scss" scoped>
-#YoungTable {
+#net-traffic {
   /* 默认宽度为 30% */
   width: 30%;
 }
 
 /* 在手机上应用不同的宽度 */
 @media (max-width: 767px) {
-  #YoungTable {
+  #net-traffic {
     width: 80%;
   }
 }

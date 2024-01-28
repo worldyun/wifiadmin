@@ -508,10 +508,7 @@ onBeforeUnmount(() => {
   emitter.off("tagViewsShowModel");
   emitter.off("changLayoutRoute");
 });
-function GoMy() {
-  router.push({ name: 'my_youth' });
-  // router.push({ name: 'Yiframe', query: {url: "https://my-youth.cn/" } });
-}
+
 </script>
 
 <template>
@@ -541,8 +538,8 @@ function GoMy() {
         </div>
       </div>
     </div>
-    <TypeIt id="BY" style="margin-left: 5px;margin-right: 5px;color: #dee0e7;" :className="'type-it6'"
-      :values="[`By:Young`]" :cursor="false" :speed="120" @click="GoMy" />
+    <TypeIt id="author-information" style="margin-left: 5px;margin-right: 5px;color: #dee0e7;" :className="'type-it6'"
+      :values="[`By:Young`]" :cursor="false" :speed="120" />
     <span v-show="isShowArrow" class="arrow-right">
       <IconifyIconOffline :icon="ArrowRightSLine" @click="handleScroll(-200)" />
     </span>
@@ -579,7 +576,7 @@ function GoMy() {
 @import url("./index.scss");
 
 @media (max-width: 500px) {
-  #BY {
+  #author-information {
     display: none;
   }
 }

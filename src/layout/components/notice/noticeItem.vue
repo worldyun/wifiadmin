@@ -40,13 +40,6 @@ function ToEvent() {
           return;
         }
         router.push({ name: array[0] });
-        break; 
-      case 'web':
-        router.push({ name: 'Yiframe', query: { url: array[0] ? array[0] : "https://my-youth.cn/" } });
-        break;
-      case 'url':
-        const externalLink = array[0] ? array[0] : "https://my-youth.cn/"; // 外部链接的地址
-        window.open(externalLink, array[1] ? array[1] : "_blank");
         break;
       case 'tips':
         ElMessageBox.alert(array[1] ? array[1] : "没啥", array[0] ? array[0] : "温馨提示", {
