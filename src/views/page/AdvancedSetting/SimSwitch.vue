@@ -25,7 +25,7 @@ onMounted(() => {
   init();
 });
 function init() {
-    //获取SIM卡信息
+  //获取SIM卡信息
   getapi('cmd=sim_switch_number%2Csim_auto_switch_enable%2Csim_current_type%2Csim_switch_running_detect%2Csim_default_type%2Csim_lock_status%2Ccstm_webui_simswitch&multi_data=1').then(res => {
     ruleForm.cstm_webui_simswitch = res.cstm_webui_simswitch;
     ruleForm.sim_auto_switch_enable = res.sim_auto_switch_enable;
@@ -36,33 +36,33 @@ function init() {
     ruleForm.sim_switch_running_detect = res.sim_switch_running_detect;
     load_switch.value = false;
   }).catch(error => {
-      load_switch.value = false;
-      console.log('加载失败');
+    load_switch.value = false;
+    console.log('加载失败');
   });
 }
 function submitForm() {
-    load_switch.value = true;
-    //当自动切换SIM功能关闭时顺手也关了检测运行时状态
-    if (ruleForm.sim_auto_switch_enable != '1') {
-      ruleForm.sim_switch_running_detect = '0';
-    }
-    postapi({
-      sim_auto_switch_enable: ruleForm.sim_auto_switch_enable,
-      sim_default_type: ruleForm.sim_default_type,
-      sim_switch_running_detect: ruleForm.sim_switch_running_detect,
-      goformId: "SIM_SWITCH"
-    }).then(res => {
-      if (res.result == "success") {
-        init();
-        message("成功发送请求", { type: "success" });
-      } else {
-        message("操作失败", { type: "error" });
-        load_switch.value = false;
-      }
-    }).catch(error => {
-      message("请求失败", { type: "error" });
+  load_switch.value = true;
+  //当自动切换SIM功能关闭时顺手也关了检测运行时状态
+  if (ruleForm.sim_auto_switch_enable != '1') {
+    ruleForm.sim_switch_running_detect = '0';
+  }
+  postapi({
+    sim_auto_switch_enable: ruleForm.sim_auto_switch_enable,
+    sim_default_type: ruleForm.sim_default_type,
+    sim_switch_running_detect: ruleForm.sim_switch_running_detect,
+    goformId: "SIM_SWITCH"
+  }).then(res => {
+    if (res.result == "success") {
+      init();
+      message("成功发送请求", { type: "success" });
+    } else {
+      message("操作失败", { type: "error" });
       load_switch.value = false;
-    });
+    }
+  }).catch(error => {
+    message("请求失败", { type: "error" });
+    load_switch.value = false;
+  });
 }
 </script>
 <template>
@@ -71,9 +71,9 @@ function submitForm() {
       <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="16" class="mb-[5px]" v-motion :initial="{ opacity: 0, y: 100 }"
         :enter="{ opacity: 1, y: 0, transition: { delay: 200 } }">
         <b v-if="ruleForm.sim_lock_status != 'unlock'">
-          很高兴地通知你: SIM卡未解锁。你需要先刷回原版后台解锁, 或者使用其他工具解锁后再使用此功能。为啥不写解锁功能呢, 因为解锁是一个一次性功能, 第一次解锁后就再也不需要解锁了。 
+          很高兴地通知你: SIM卡未解锁。你需要先刷回原版后台解锁, 或者使用其他工具解锁后再使用此功能。为啥不写解锁功能呢, 因为解锁是一个一次性功能, 第一次解锁后就再也不需要解锁了。
         </b>
-        <el-card  shadow="never" v-loading="load_switch" v-if="ruleForm.sim_lock_status == 'unlock'">
+        <el-card shadow="never" v-loading="load_switch" v-if="ruleForm.sim_lock_status == 'unlock'">
           <template #header>
             <TypeIt :className="'type-it1'" :values="['SIM卡选择']" :cursor="false" :speed="60" />
           </template>
@@ -101,7 +101,8 @@ function submitForm() {
                     <el-option label="启用" value="1" />
                   </el-select>
                 </el-form-item>
-                <el-form-item v-show="ruleForm.sim_auto_switch_enable == 1" label="检测运行时状态" prop="sim_switch_running_detect">
+                <el-form-item v-show="ruleForm.sim_auto_switch_enable == '1'" label="检测运行时状态"
+                  prop="sim_switch_running_detect">
                   <el-select v-model="ruleForm.sim_switch_running_detect" :fit-input-width="true" style="width: 100%;">
                     <el-option label="关闭" value="0" />
                     <el-option label="启用" value="1" />
