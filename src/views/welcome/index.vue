@@ -227,11 +227,11 @@ function gotowifilist() {
             </div>
           </template>
           <el-scrollbar :height="`calc(${height}px - 35vh - 340px)`">
-            <el-descriptions direction="vertical" :column="5" border size="default">
+            <el-descriptions direction="vertical" :column="4" border size="default">
               <el-descriptions-item label="IMEI" :span="2">{{ allinfo.imei }}</el-descriptions-item>
               <el-descriptions-item label="ICCID" :span="2">{{ store.state.NetInfo.ziccid }}</el-descriptions-item>
+                <el-descriptions-item label="IMSI" :span="2">{{ allinfo.sim_imsi }}</el-descriptions-item>
               <el-descriptions-item label="信号强度" :min-width="80">{{ allinfo.rssi }} dBm</el-descriptions-item>
-              <el-descriptions-item label="IMSI" :span="2">{{ allinfo.sim_imsi }}</el-descriptions-item>
               <el-descriptions-item label="运营商">{{ netname }}</el-descriptions-item>
               <el-descriptions-item label="网络名称" :min-width="120" :span="2">{{ newinfo.SSID1 != '' ?
                 newinfo.SSID1 : allinfo.m_SSID
