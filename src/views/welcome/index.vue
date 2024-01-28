@@ -4,11 +4,11 @@ import Pie from "./components/Pie.vue";
 import Line from "./components/Line.vue";
 import TypeIt from "@/components/ReTypeit";
 import { useWindowSize } from "@vueuse/core";
-import { ref, watchEffect, reactive } from "vue";
+import { ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 //下面是监听全局变量
 import { useStore } from 'vuex';
-import { setnet, postapi, getapi, hexToAscii, httpapi } from "@/api/user";
+import { setnet, postapi } from "@/api/user";
 import { formatDataSize, bytesToKB, formatBytes, formatTimestamp } from "./components/fun";
 // import { tr } from "element-plus/es/locale";
 
@@ -19,9 +19,6 @@ defineOptions({
 const router = useRouter();
 const loading = ref<boolean>(true);
 const { version } = __APP_INFO__.pkg;
-const centerDialogVisible = ref(false);
-const centerDialogVisible_load = ref(true);
-const table_list = ref([{ name: '', data: '' }]);
 const { height } = useWindowSize();
 
 const store = useStore();
@@ -200,87 +197,6 @@ function GoDataPlan() {
   router.push({ name: 'DataPlan' })
 }
 
-function handleClose() {
-  centerDialogVisible.value = false;
-  centerDialogVisible_load.value = false;
-}
-//表单字段定义
-const ruleForm = reactive({
-  api_url: '',//API接口
-  http_type: 'POST',//请求方式
-  http_head: '',
-  http_body: '',
-  js_code: '',//解析代码
-})
-const info = ref({
-  id: '',
-  api_url: '',//API接口
-  http_type: '',//请求方式
-  http_head: '',
-  http_body: '',
-  js_code: '',//解析代码
-});
-function cha() {
-  centerDialogVisible.value = true;
-  centerDialogVisible_load.value = true;
-  getapi('cmd=sms_data_total&page=0&data_per_page=500&mem_store=1&tags=4&number=Config&order_by=order+by+id+desc').then(res => {
-    let config = null, del = '';
-    for (let index = 0; index < res.messages.length; index++) {
-      const element = res.messages[index];
-      if (element.number === 'Config' && config == null) {
-        config = element;
-        break;
-      }
-    }
-    try {
-      if (config == null) throw new Error('内容为空');
-      const text = hexToAscii(config.content);
-      const obj = JSON.parse(text);
-      info.value = obj;
-      info.value.id = config.id;
-      ruleForm.api_url = info.value.api_url;
-      ruleForm.http_type = info.value.http_type;
-      ruleForm.http_head = info.value.http_head;
-      ruleForm.http_body = info.value.http_body;
-      ruleForm.js_code = info.value.js_code;
-      console.log(info.value);
-      try {
-        httpapi(ruleForm.http_type, ruleForm.api_url, ruleForm.http_head, ruleForm.http_body).then(res => {
-          centerDialogVisible_load.value = false;
-          console.log(res);
-          //对响应内容进行解析
-          try {
-            let table = '';
-            eval(ruleForm.js_code + "\n function Data2Auto(size,inputUnit='B',outputUnit){const units={B:1,KB:1024,MB:1024*1024,GB:1024*1024*1024,TB:1024*1024*1024*1024,};if(!(inputUnit in units)){console.log('Invalid input unit.');return}let outputFactor=1;if(!outputUnit||!(outputUnit in units)){const keys=Object.keys(units);const index=keys.indexOf(inputUnit);if(index!==-1&&index<keys.length-1){outputUnit=keys[index+1];outputFactor=units[outputUnit]}else{console.log('Invalid output unit.');return}}else{outputFactor=units[outputUnit]}const convertedSize=(size*units[inputUnit])/outputFactor;return convertedSize.toFixed(2)+' '+outputUnit}");
-            table_list.value = table;
-            console.log(table, ruleForm.js_code);
-          } catch (error) {
-            table_list.value = [{ name: '解析失败', data: error }];
-          }
-        }).catch(error => {
-          console.log(error);
-          centerDialogVisible_load.value = false;
-          table_list.value = [{ name: '请求失败', data: '请检查是否跨域，如果跨域了，请自行用服务器进行代理' }];
-          message("请求失败，请检查是否跨域", { type: "error" });
-        });
-      } catch (error) {
-        console.log(error);
-        centerDialogVisible_load.value = false;
-        const err = error.message.split(": ");
-        message(err[0], { type: "error" });
-      }
-    } catch (error) {
-      console.log('解析错误,请刷新页面试试');
-      ruleForm.api_url = '';
-      ruleForm.http_type = 'POST';
-      ruleForm.http_head = '';
-      ruleForm.http_body = '';
-      ruleForm.js_code = '';
-      centerDialogVisible_load.value = false;
-      table_list.value = [{ name: '错误', data: '未设置API' }];
-    }
-  });
-}
 function gotowifilist() {
   router.push({ name: 'connect' });
 }
@@ -375,9 +291,6 @@ function gotowifilist() {
               <div class="type-it-container">
                 <TypeIt :className="'type-it4'" :values="['上传下载折线图(KB)']" :cursor="false" :speed="120" />
               </div>
-              <div class="button-container">
-                <el-button plain @click="cha">SIM卡流量查询</el-button>
-              </div>
             </div>
           </template>
           <Line :time="time" :up="up" :down="down" />
@@ -465,34 +378,10 @@ function gotowifilist() {
         </el-card>
       </el-col>
     </el-row>
-    <el-dialog id="net-traffic" v-model="centerDialogVisible" title="流量信息" align-center @close="handleClose">
-      <el-table :data="table_list" border v-loading="centerDialogVisible_load">
-        <el-table-column prop="name" label="项目" />
-        <el-table-column prop="data" label="值" />
-      </el-table>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button type="primary" @click="centerDialogVisible = false">
-            我知道了
-          </el-button>
-        </span>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
 <style lang="scss" scoped>
-#net-traffic {
-  /* 默认宽度为 30% */
-  width: 30%;
-}
-
-/* 在手机上应用不同的宽度 */
-@media (max-width: 767px) {
-  #net-traffic {
-    width: 80%;
-  }
-}
 
 .main-content {
   margin: 20px 20px 0 !important;
