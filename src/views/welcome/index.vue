@@ -456,7 +456,7 @@ function gotowifilist() {
               <div class="descriptions_container" style="width: 100%;">
                 <el-descriptions :column="2" border size="default">
                   <el-descriptions-item label="当前WEB版本" :align="'center'">
-                    V{{ version }}
+                    Y_V{{ version }}
                   </el-descriptions-item>
                 </el-descriptions>
               </div>
