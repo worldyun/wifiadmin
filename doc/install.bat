@@ -2,6 +2,19 @@
 CHCP 65001
 CLS
 
+adb version
+IF NOT %errorlevel% EQU 0 (
+    ECHO 请安装ADB 
+    GOTO END
+)
+curl -V
+IF NOT %errorlevel% EQU 0 (
+    ECHO 请安装curl 
+    GOTO END
+)
+
+CLS
+
 @REM 获取后台地址
 ECHO 欢迎使用一键安装脚本, 在开始之前请认真阅读以下内容 
 ECHO 1. 请确保你的设备已开机, 并通过USB成功连接至电脑, 且后台登录密码为admin 
@@ -31,8 +44,19 @@ IF NOT %_http_res% == {"hw_version":"F231ZC_V1.0_OM_OM"} (
     GOTO END
 )
 
+@REM 检查SIM卡槽是否解锁
+@REM 延迟一秒
+TIMEOUT /t 1 > nul
+SET _http_res=NULL
+FOR /f "tokens=*" %%A IN ('curl -m 2 -s -H "Accept: application/json, text/javascript, */*; q=0.01" -H "Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6" -H "'Content-Type: application/x-www-form-urlencoded; charset=UTF-8" "http://%_device_ip%/goform/goform_get_cmd_process?cmd=sim_lock_status"') DO SET _http_res=%%A
+ECHO %_http_res%
+IF NOT %_http_res% == {"sim_lock_status":"unlock"} (
+    ECHO 外置SIM卡槽未解锁, 请先前往原版后台 高级设置 - 其他 - SIM卡解锁, 可能的解锁密码为: az902# 
+    GOTO END
+)
 
-ECHO 硬件版本校验成功, 正在开启ADB, 在设备重启之前请勿关闭或拔出设备, 否则将可能导致设备损坏 
+ECHO 硬件版本校验成功, 正在开启ADB, 在设备重启之前请勿关闭或拔出设备, 否则将可能导致设备损坏, 按任意键继续 
+PAUSE
 @REM 延迟一秒
 TIMEOUT /t 1 > nul
 curl -m 10 -s -H "Accept: application/json, text/javascript, */*; q=0.01" -H "Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6" -H "'Content-Type: application/x-www-form-urlencoded; charset=UTF-8" "http://%_device_ip%/goform/goform_set_cmd_process?goformId=SET_DEVICE_MODE&debug_enable=2"
@@ -157,7 +181,7 @@ ECHO 新WEB大小为: %_web_size%B
 
 ECHO 请自行计算空间是否能够刷入, 如果空间不足, 刷入后会丢失后台 
 ECHO 计算规则为: 设备剩余空间 + 原WEB大小 大于 新WEB大小 
-ECHO 确认关闭请输入 Y 并回车, 否则请输入 N 并回车  
+ECHO 确认刷入请输入 Y 并回车, 否则请输入 N 并回车  
 SET /p _confirm= 
 IF NOT "%_confirm%" == "Y" (
     ECHO 已取消刷入 
@@ -212,7 +236,7 @@ ECHO 是否关闭设备ADB?
 ECHO 确认关闭请输入 Y 并回车, 否则请输入 N 并回车  
 SET /p _confirm= 
 IF NOT "%_confirm%" == "Y" (
-    ECHO 设备ADB将不会被关闭, 您可在后台 高级设置 > 其他设置 > 中兴微ADB 自行关闭 
+    ECHO 设备ADB将不会被关闭, 您可在后台 高级设置 - 其他设置 - 中兴微ADB 自行关闭 
     GOTO END
 )
 
