@@ -28,11 +28,14 @@ jobs:
           pnpm install
 
       - name: Build
-        run: 
+        run: |
           pnpm build
+          mkdir auto_install
+          mv dist auto_install/web
+          cp doc/install.bat auto_install/
 
       - name: Upload files
         uses: actions/upload-artifact@v4
         with:
-          name: web
-          path: dist
+          name: auto_install
+          path: auto_install
