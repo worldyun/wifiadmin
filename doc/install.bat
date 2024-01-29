@@ -2,7 +2,7 @@
 CHCP 65001
 CLS
 
-REM 获取后台地址
+@REM 获取后台地址
 ECHO 欢迎使用一键安装脚本, 在开始之前请认真阅读以下内容 
 ECHO 1. 请确保你的设备已开机, 并通过USB成功连接至电脑, 且后台登录密码为admin 
 ECHO 2. 请确保刷入期间没有其他ADB设备接入电脑 
@@ -10,7 +10,7 @@ ECHO 3. 刷入期间, 确保设备与电脑不断开连接, 如拔出设备、�
 ECHO 请输入设备后台地址: 
 SET /p _device_ip= 
 
-REM  登录后台并获取相关数据
+@REM 登录后台并获取相关数据
 SET _http_res=NULL
 FOR /f "tokens=*" %%A IN ('curl -m 2 -s -X POST -H "Content-Type: application/x-www-form-urlencoded; charset=UTF-8" -d "goformId=LOGIN&password=YWRtaW4=" "http://%_device_ip%/goform/goform_set_cmd_process"') DO SET _http_res=%%A
 ECHO %_http_res%
@@ -69,12 +69,12 @@ GOTO ping_loop
 ECHO 设备已上线, 正在连接ADB 
 @REM 计算ADB设备数量
 SET _device_count=0
-REM 获取当前连接的Android设备列表
+@REM 获取当前连接的Android设备列表
 adb devices > nul
 adb devices > nul
 adb devices > nul
 FOR /f "tokens=1 delims= " %%a IN ('adb devices') DO (
-    REM 判断设备状态是否为"device"
+    @REM 判断设备状态是否为"device"
     IF NOT "%%a" == "List" (
       SET /a _device_count+=1
     )
