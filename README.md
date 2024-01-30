@@ -66,7 +66,7 @@ pnpm build
 
 ## 手动刷入
 
-以下内容来自[jqtmviyu/wifiadmin](https://raw.githubusercontent.com/jqtmviyu/wifiadmin)
+以下内容来自[jqtmviyu/wifiadmin](https://github.com/jqtmviyu/wifiadmin)
 
 ### 备份(可选)
 
