@@ -20,14 +20,15 @@ ECHO 欢迎使用一键安装脚本, 在开始之前请认真阅读以下内容
 ECHO 1. 请确保你的设备已开机, 并通过USB成功连接至电脑, 且后台登录密码为admin 
 ECHO 2. 请确保刷入期间没有其他ADB设备接入电脑 
 ECHO 3. 刷入期间, 确保设备与电脑不断开连接, 如拔出设备、关闭电脑等 
-ECHO 请输入设备后台地址: 
+ECHO 4. 刷入期间, 请勿登录设备后台 
+ECHO 请输入设备IP地址: 
 SET /p _device_ip= 
 
 @REM 登录后台并获取相关数据
 SET _http_res=NULL
 FOR /f "tokens=*" %%A IN ('curl -m 2 -s -X POST -H "Content-Type: application/x-www-form-urlencoded; charset=UTF-8" -d "goformId=LOGIN&password=YWRtaW4=" "http://%_device_ip%/goform/goform_set_cmd_process"') DO SET _http_res=%%A
 ECHO %_http_res%
-IF NOT "%_http_res%" == "{"result":"0"}" (
+IF NOT %_http_res% == {"result":"0"} (
     ECHO 登录失败,请检查设备是否连接或后台地址是否正确 
     GOTO END
 )
@@ -100,7 +101,7 @@ adb devices > nul
 FOR /f "tokens=1 delims= " %%a IN ('adb devices') DO (
     @REM 判断设备状态是否为"device"
     IF NOT "%%a" == "List" (
-      SET /a _device_count+=1
+        SET /a _device_count+=1
     )
 )
 IF NOT %_device_count% == 1 (
@@ -127,25 +128,15 @@ IF %errorlevel% EQU 0 (
     ECHO 设备WEB目录检测失败 
     GOTO END
 )
-@REM IF NOT "%_adb_output%" == "/etc_ro/web/index.html" (
-@REM     ECHO 设备WEB目录检测失败 
-@REM     GOTO END
-@REM )
 
 @REM 备份原WEB后台
 ECHO 设备WEB目录检测成功, 正在备份原WEB后台 
 TIMEOUT /t 1 > nul
 adb pull /etc_ro/web ./web_backup
 IF NOT %errorlevel% EQU 0 (
-    ECHO 设备WEB目录检测失败 
+    ECHO 备份原WEB后台失败 
     GOTO END
 )
-@REM SET _adb_output=NULL
-@REM FOR /f "tokens=1 delims=:" %%A IN ('adb pull /etc_ro/web ./web_backup') DO SET "_adb_output=%%A"
-@REM IF NOT "%_adb_output%" == "/etc_ro/web/" (
-@REM     ECHO 备份原WEB后台失败 
-@REM     GOTO END
-@REM )
 ECHO 备份原WEB后台成功, 备份文件在web_backup目录, 请妥善保存 
 
 @REM 计算剩余空间大小 
@@ -153,28 +144,28 @@ ECHO 正在计算设备剩余空间, 以供参考
 TIMEOUT /t 1 > nul
 SET _available=NULL
 FOR /f "tokens=1,4 delims= " %%A IN ('adb shell df -h') DO (
-  IF "%%A" == "/dev/mtdblock4" (
-    SET _available=%%B
-  )
+    IF "%%A" == "/dev/mtdblock4" (
+        SET _available=%%B
+    )
 )
 ECHO 当前设备剩余空间为: %_available% 
 
 SET _web_backup_size=NULL
 FOR /f "tokens=3,5 delims= " %%A IN ('dir web_backup /s') DO (
-  IF "%%B" == "free" (
-    GOTO get_web_backup_size
-  )
-  SET _web_backup_size=%%A
+    IF "%%B" == "free" (
+        GOTO get_web_backup_size
+    )
+    SET _web_backup_size=%%A
 )
 :get_web_backup_size
 ECHO 原WEB大小为: %_web_backup_size%B
 
 SET _web_size=NULL
 FOR /f "tokens=3,5 delims= " %%A IN ('dir web /s') DO (
-  IF "%%B" == "free" (
-    GOTO get_web_size
-  )
-  SET _web_size=%%A
+    IF "%%B" == "free" (
+        GOTO get_web_size
+    )
+    SET _web_size=%%A
 )
 :get_web_size
 ECHO 新WEB大小为: %_web_size%B 
@@ -203,10 +194,6 @@ IF %errorlevel% EQU 0 (
     ECHO WEB目录不可写 
     GOTO END
 )
-@REM IF NOT "%_adb_output%" == "/etc_ro/web/test.txt" (
-@REM     ECHO WEB目录不可写 
-@REM     GOTO END
-@REM )
 
 ECHO 读写测试通过, 正在删除原WEB后台 
 TIMEOUT /t 1 > nul
@@ -225,10 +212,6 @@ IF %errorlevel% EQU 0 (
     ECHO 刷入失败 
     GOTO END
 )
-@REM IF NOT "%_adb_output%" == "/etc_ro/web/index.html" (
-@REM     ECHO 刷入失败 
-@REM     GOTO END
-@REM )
 
 ECHO 刷入成功, 请打开%_device_ip%查看新后台 
 
