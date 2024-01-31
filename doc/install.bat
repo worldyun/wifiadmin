@@ -45,19 +45,9 @@ IF NOT %_http_res% == {"hw_version":"F231ZC_V1.0_OM_OM"} (
     GOTO END
 )
 
-@REM 检查SIM卡槽是否解锁
-@REM 延迟一秒
-TIMEOUT /t 1 > nul
-SET _http_res=NULL
-FOR /f "tokens=*" %%A IN ('curl -m 2 -s -H "Accept: application/json, text/javascript, */*; q=0.01" -H "Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6" -H "'Content-Type: application/x-www-form-urlencoded; charset=UTF-8" "http://%_device_ip%/goform/goform_get_cmd_process?cmd=sim_lock_status"') DO SET _http_res=%%A
-ECHO %_http_res%
-IF NOT %_http_res% == {"sim_lock_status":"unlock"} (
-    ECHO 外置SIM卡槽未解锁, 请先前往原版后台 高级设置 - 其他 - SIM卡解锁, 可能的解锁密码为: az902# 
-    GOTO END
-)
-
-ECHO 硬件版本校验成功, 正在开启ADB, 在设备重启之前请勿关闭或拔出设备, 否则将可能导致设备损坏, 按任意键继续 
+ECHO 硬件版本校验成功, 即将开启ADB, 在设备重启之前请勿关闭或拔出设备, 否则将可能导致设备损坏, 按任意键继续 
 PAUSE
+ECHO 正在开启ADB 
 @REM 延迟一秒
 TIMEOUT /t 1 > nul
 curl -m 10 -s -H "Accept: application/json, text/javascript, */*; q=0.01" -H "Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6" -H "'Content-Type: application/x-www-form-urlencoded; charset=UTF-8" "http://%_device_ip%/goform/goform_set_cmd_process?goformId=SET_DEVICE_MODE&debug_enable=2"
