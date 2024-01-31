@@ -20,6 +20,10 @@ const ruleForm = reactive({
   sim_switch_number: '',//未知，可能是卡片数量？
   sim_switch_running_detect: '',//检测运行时状态
 })
+const simLockStatus = reactive({
+  sim_unlock_nck_time: '0', //剩余可尝试次数
+  sim_unlock_code: '', //解锁码
+})
 //页面加载完成
 onMounted(() => {
   init();
@@ -34,6 +38,12 @@ function init() {
     ruleForm.sim_lock_status = res.sim_lock_status;
     ruleForm.sim_switch_number = res.sim_switch_number;
     ruleForm.sim_switch_running_detect = res.sim_switch_running_detect;
+    //判断是否已解锁
+    if (ruleForm.sim_lock_status != 'unlock') {
+      getapi('cmd=sim_unlock_nck_time').then(res => {
+        simLockStatus.sim_unlock_nck_time = res.sim_unlock_nck_time;
+      })
+    }
     load_switch.value = false;
   }).catch(error => {
     load_switch.value = false;
@@ -56,8 +66,26 @@ function submitForm() {
       init();
       message("成功发送请求", { type: "success" });
     } else {
+      init();
       message("操作失败", { type: "error" });
-      load_switch.value = false;
+    }
+  }).catch(error => {
+    init();
+    message("请求失败", { type: "error" });
+  });
+}
+function unlockSim() {
+  postapi({
+    sim_unlock_code: simLockStatus.sim_unlock_code,
+    notCallback: "true",
+    goformId: "GORORM_UNLOCK_SIM"
+  }).then(res => {
+    if (res.result == "success") {
+      init();
+      message("成功发送请求", { type: "success" });
+    } else {
+      init();
+      message("操作失败", { type: "error" });
     }
   }).catch(error => {
     message("请求失败", { type: "error" });
@@ -67,13 +95,10 @@ function submitForm() {
 </script>
 <template>
   <div>
-    <el-row :gutter="24">
+    <el-row :gutter="24" v-if="ruleForm.sim_lock_status == 'unlock'">
       <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="16" class="mb-[5px]" v-motion :initial="{ opacity: 0, y: 100 }"
         :enter="{ opacity: 1, y: 0, transition: { delay: 200 } }">
-        <b v-if="ruleForm.sim_lock_status != 'unlock'">
-          很高兴地通知你: SIM卡未解锁。你需要先刷回原版后台解锁, 或者使用其他工具解锁后再使用此功能。为啥不写解锁功能呢, 因为解锁是一个一次性功能, 第一次解锁后就再也不需要解锁了。
-        </b>
-        <el-card shadow="never" v-loading="load_switch" v-if="ruleForm.sim_lock_status == 'unlock'">
+        <el-card shadow="never" v-loading="load_switch">
           <template #header>
             <TypeIt :className="'type-it1'" :values="['SIM卡选择']" :cursor="false" :speed="60" />
           </template>
@@ -119,7 +144,7 @@ function submitForm() {
       </el-col>
       <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8" class="mb-[5px]" v-motion :initial="{ opacity: 0, y: 100 }"
         :enter="{ opacity: 1, y: 0, transition: { delay: 200 } }">
-        <el-card shadow="never" v-loading="load_switch" v-if="ruleForm.sim_lock_status == 'unlock'">
+        <el-card shadow="never" v-loading="load_switch">
           <template #header>
             <TypeIt :className="'type-it2'" :values="['设置说明']" :cursor="false" :speed="60" />
           </template>
@@ -136,6 +161,49 @@ function submitForm() {
               </el-collapse-item>
               <el-collapse-item title="检测运行时状态" name="4">
                 我也不清楚是干啥的, 来个吊大的给我解释解释呗。
+              </el-collapse-item>
+            </el-collapse>
+          </template>
+        </el-card>
+      </el-col>
+    </el-row>
+    <el-row :gutter="24" v-if="ruleForm.sim_lock_status != 'unlock'">
+      <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="16" class="mb-[5px]" v-motion :initial="{ opacity: 0, y: 100 }"
+        :enter="{ opacity: 1, y: 0, transition: { delay: 200 } }">
+        <el-card shadow="never" v-loading="load_switch">
+          <template #header>
+            <TypeIt :className="'type-it1'" :values="['该功能需解锁']" :cursor="false" :speed="60" />
+          </template>
+          <template #default>
+            <div class="form-container">
+              <el-form ref="simLockStatusRef" :model="simLockStatus" status-icon label-width="120px" class="demo-ruleForm"
+                label-position="left">
+                <el-form-item label="解锁码" prop="sim_unlock_code">
+                  <el-input v-model="simLockStatus.sim_unlock_code" type="text" autocomplete="off" />
+                  <el-text>剩余可尝试次数: {{ simLockStatus.sim_unlock_nck_time }}</el-text>
+                </el-form-item>
+                <el-form-item class="form-buttons">
+                  <el-button type="primary" @click="unlockSim()">解锁</el-button>
+                </el-form-item>
+                <el-button style="visibility: hidden;"></el-button>
+              </el-form>
+            </div>
+          </template>
+        </el-card>
+      </el-col>
+      <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8" class="mb-[5px]" v-motion :initial="{ opacity: 0, y: 100 }"
+        :enter="{ opacity: 1, y: 0, transition: { delay: 200 } }">
+        <el-card shadow="never" v-loading="load_switch">
+          <template #header>
+            <TypeIt :className="'type-it2'" :values="['设置说明']" :cursor="false" :speed="60" />
+          </template>
+          <template #default>
+            <el-collapse>
+              <el-collapse-item title="解锁码" name="1">
+                请前往相关社区查询此设备的解锁码，可能的解锁码为: az952#
+              </el-collapse-item>
+              <el-collapse-item title="剩余可尝试次数" name="2">
+                剩余可尝试次数可通过恢复出厂设置重置。当尝试次数耗尽后，没人知道会发生什么，请勿轻易尝试。
               </el-collapse-item>
             </el-collapse>
           </template>
