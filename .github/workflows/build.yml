@@ -17,6 +17,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check the base branch
+        run: |
+          main_commits=$(git log main --pretty=%H)
+          if [[ "$main_commits" == *"fd07393206167bbf47047860181e49e7b54e3c7b"* ]]; then echo "Prohibit merging dev branch to main branch!"; exit 1; fi
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
