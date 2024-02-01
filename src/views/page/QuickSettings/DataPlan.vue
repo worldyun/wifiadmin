@@ -257,8 +257,8 @@ const submitForm = (formEl: FormInstance | undefined) => {
               message("成功发送请求", { type: "success" });
             } else {
               message("操作失败", { type: "error" });
-              load_switch.value = false;
             }
+            load_switch.value = false;
           }).catch(error => {
             message("请求失败", { type: "error" });
             load_switch.value = false;
