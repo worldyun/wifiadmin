@@ -1,6 +1,6 @@
 {
   "name": "pure-admin-thin",
-  "version": "1.0.4",
+  "version": "1.0.4.DEV",
   "private": true,
   "scripts": {
     "dev": "NODE_OPTIONS=--max-old-space-size=4096 vite",
