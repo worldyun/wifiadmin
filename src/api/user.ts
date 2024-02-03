@@ -15,6 +15,17 @@ function getpath(type) {
     return is_r186x == false ? 'goform/goform_set_cmd_process' : 'reqproc/proc_post'
   }
 }
+
+//获取baseUrl
+function getBaseUrl() {
+  let baseUrl = import.meta.env.VITE_BASE_URL;
+  let hostName = 'http://' + window.location.hostname;
+  if (hostName == 'http://localhost') {
+    return baseUrl;
+  }
+  return hostName;
+}
+
 /** api请求 */
 export const httpapi = (method: string = 'POST', apiUrl?: string, head?: string, body?: string) => {
   const validMethods = ['get', 'put', 'post', 'delete'];
@@ -65,7 +76,7 @@ function convertStringToObject(str) {
 
 /** post请求 */
 export const postapi = (data?: object) => {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = getBaseUrl();
   const headers = {
     'Accept': 'application/json, text/javascript, */*; q=0.01',
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
@@ -76,7 +87,7 @@ export const postapi = (data?: object) => {
 
 /** get请求 */
 export const getapi = (cmd?: string, hide: boolean = false) => {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = getBaseUrl();
   const headers = {
     'Accept': 'application/json, text/javascript, */*; q=0.01',
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
@@ -93,7 +104,7 @@ export const getapi = (cmd?: string, hide: boolean = false) => {
 
 /** 退出登录 */
 export const outLogin = () => {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = getBaseUrl();
   const headers = {
     'Accept': 'application/json, text/javascript, */*; q=0.01',
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
@@ -106,7 +117,7 @@ export const outLogin = () => {
 
 /** 获取是否登录 */
 export const islogin = () => {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = getBaseUrl();
   const headers = {
     'Accept': 'application/json, text/javascript, */*; q=0.01',
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
@@ -118,7 +129,7 @@ export const islogin = () => {
 
 /** 获取有线列表 */
 export const getlanlist = () => {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = getBaseUrl();
   const headers = {
     'Accept': 'application/json, text/javascript, */*; q=0.01',
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
@@ -130,7 +141,7 @@ export const getlanlist = () => {
 
 /** 获取无线列表 */
 export const getwifilist = () => {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = getBaseUrl();
   const headers = {
     'Accept': 'application/json, text/javascript, */*; q=0.01',
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
@@ -143,7 +154,7 @@ export const getwifilist = () => {
 
 /** 打开/关闭数据漫游 */
 export const setnet = (goformId?: string) => {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = getBaseUrl();
   const headers = {
     'Accept': 'application/json, text/javascript, */*; q=0.01',
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
