@@ -1,8 +1,8 @@
-name: Build main Branche
+name: Build dev Branche
 
 on:
   push:
-    branches: ["main"]
+    branches: ["dev"]
 
 jobs:
   build:
@@ -35,5 +35,5 @@ jobs:
       - name: Upload files
         uses: actions/upload-artifact@v4
         with:
-          name: auto_install
+          name: auto_install_dev
           path: auto_install
