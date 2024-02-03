@@ -65,7 +65,7 @@ function get_name(e) {
 }
 function GetList(e) {
   try {
-    return info_list.value.filter(item => item.type === e);
+    return info_list.value.filter(item => item.type === e).filter(item => item.isdisabled == '1');
   } catch (error) {
     console.log('未加载完成');
     return [];
@@ -269,9 +269,9 @@ function r186x_save() {
             <el-button type="primary" style="margin-top: 15px; width: 100%; " @click="set()">应用</el-button>
           </template>
         </el-card>
-        <el-tag type="info" style="width: 100%;margin-top: 5px;white-space: normal;" size="large" effect="dark">
+        <!-- <el-tag type="info" style="width: 100%;margin-top: 5px;white-space: normal;" size="large" effect="dark">
           只能选择当前设备支持的频段，不可以选择不支持的频段。
-        </el-tag>
+        </el-tag> -->
       </el-col>
     </el-row>
   </div>
