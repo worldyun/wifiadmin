@@ -4,7 +4,6 @@ import TypeIt from "@/components/ReTypeit";
 import { ElMessageBox } from 'element-plus';
 import { ref, reactive, onMounted } from 'vue';
 import { getapi, postapi } from "@/api/user";
-// import { fa } from "element-plus/es/locale";
 defineOptions({
   name: "APN"
 });
@@ -113,6 +112,9 @@ function init() {
             'value': apn_config[0]
           });
         }
+        if (apn_config[0] == info.value["m_profile_name"]) {
+          confindex.value = i;
+        }
       }
       apn_auto_config.value = info.value['apn_auto_config'].split('($)');
       if (info.value.apn_mode == 'auto') {
@@ -128,9 +130,8 @@ function init() {
         ruleForm.ppp_auth_mode = apn_auto_config.value[4];
         // console.log(apn_auto_config.value);
       } else {
-        confindex.value = 0;
         configlist.value = oldlist.value;
-        const apn_config = configinfo.value[0];
+        const apn_config = configinfo.value[confindex.value];
         ruleForm.config = apn_config[0];
         ruleForm.profile_name = apn_config[0];
         ruleForm.apn_ipv4_apn = apn_config[1];
@@ -195,12 +196,9 @@ function mod_qie(e) {
     ruleForm.wan_dial = apn_auto_config.value[3];
     ruleForm.ppp_auth_mode = apn_auto_config.value[4];
     ruleForm.pdp_type = apn_auto_config.value[7];
-    // console.log(apn_auto_config.value, ruleForm.ppp_auth_mode);
   }
 }
 function apple() {
-  load_switch.value = true;
-  const apn_config = configinfo.value[confindex.value];
   ElMessageBox.confirm(
     `该操作将会断开网络，你确定要继续执行该操作吗？`,
     {
@@ -209,18 +207,20 @@ function apple() {
       type: 'warning',
     }
   ).then(() => {
+    if (!save(false)) {
+      return false;
+    }
     postapi({
       goformId: "DISCONNECT_NETWORK",
       notCallback: 'DISCONNECT_NETWORK'
     }).then(res => {
       if (res.result == "success") {
         message("断开数据漫游", { type: "success" });
-        postapi({
+        postapi({ //设置默认ANPN
           goformId: "APN_PROC_EX",
           apn_action: "set_default",
           apn_mode: "manual",
-          set_default_flag: "manual",
-          pdp_type: apn_config[7],
+          set_default_flag: "1",
           index: confindex.value,
         }).then(res => {
           if (res.result == "success") {
@@ -259,18 +259,32 @@ function apple() {
   })
 }
 //添加配置文件
-function add_config() {
+function save(is_init) {
+  let check = true;
   if (ruleForm.profile_name == '' || ruleForm.profile_name == 'Default') {
-    return message("配置文件名称不能为空，且不能为默认", { type: "error" });
+    message("配置文件名称不能为空，且不能为默认", { type: "error" });
+    check = false;
   }
   if (ruleForm.apn_ipv4_apn == '' || ruleForm.apn_ipv4_apn == 'Default') {
-    return message("APN不能为空，且不能为默认", { type: "error" });
+    message("APN不能为空，且不能为默认", { type: "error" });
+    check = false;
   }
-  if (configlist.value.indexOf(ruleForm.profile_name) != -1) {
-    return message("配置文件名称不能重复", { type: "error" });
+  configlist.value.forEach(element => {
+    if (element["id"] != "APN_config" + confindex.value && element["value"] == ruleForm.profile_name) {
+      message("APN名称不可重复", { type: "error" });
+      check = false;
+    }
+  });
+  if (is_add.value && oldlist.value.length >= 19) {
+    message("APN配置文件数量已达上限", { type: "error" });
+    check = false;
+  }
+  if (!check) {
+    return false;
   }
   load_switch.value = true;
   let post_data;
+  let index = is_add.value ? oldlist.value.length + 1 : confindex.value;
   if (ruleForm.pdp_type == 'IP') {
     post_data = {
       goformId: "APN_PROC_EX",
@@ -280,7 +294,7 @@ function add_config() {
       wan_dial: ruleForm.wan_dial != "" ? ruleForm.wan_dial : "*99#",
       pdp_type: ruleForm.pdp_type,
       pdp_select: "auto",
-      index: oldlist.value.length + 1,
+      index: index,
       wan_apn: ruleForm.apn_ipv4_apn,
       ppp_auth_mode: ruleForm.ppp_auth_mode != '' ? ruleForm.ppp_auth_mode : "none",
       ppp_username: ruleForm.ppp_username,
@@ -295,7 +309,7 @@ function add_config() {
       wan_dial: ruleForm.wan_dial != "" ? ruleForm.wan_dial : "*99#",
       pdp_type: ruleForm.pdp_type,
       pdp_select: "auto",
-      index: oldlist.value.length + 1,
+      index: index,
       ipv6_wan_apn: ruleForm.apn_ipv4_apn,
       ipv6_ppp_auth_mode: ruleForm.ppp_auth_mode != '' ? ruleForm.ppp_auth_mode : "none",
       ipv6_ppp_username: ruleForm.ppp_username,
@@ -310,7 +324,7 @@ function add_config() {
       wan_dial: ruleForm.wan_dial != "" ? ruleForm.wan_dial : "*99#",
       pdp_type: ruleForm.pdp_type,
       pdp_select: "auto",
-      index: oldlist.value.length + 1,
+      index: index,
       wan_apn: ruleForm.apn_ipv4_apn,
       ppp_auth_mode: ruleForm.ppp_auth_mode != '' ? ruleForm.ppp_auth_mode : "none",
       ppp_username: ruleForm.ppp_username,
@@ -323,9 +337,11 @@ function add_config() {
   }
   postapi(post_data).then(res => {
     if (res.result == "success") {
-      init();//重新初始化获取数据
+      if (is_init) {
+        init();//重新初始化获取数据
+      }
       is_add.value = false;
-      message("添加APN", { type: "success" });
+      message("保存APN", { type: "success" });
     } else {
       message("操作失败", { type: "error" });
       load_switch.value = false;
@@ -334,6 +350,7 @@ function add_config() {
     message("请求失败", { type: "error" });
     load_switch.value = false;
   });
+  return true;
 }
 //删除配置文件
 function delete_config() {
@@ -358,8 +375,7 @@ function delete_config() {
 }
 
 function submitForm() {
-  ruleForm.apn_mode = ruleForm.apn_mode == '自动' ? 'auto' : 'manual';
-  if (ruleForm.apn_mode == 'auto') {
+  if (ruleForm.apn_mode == '自动') {
     load_switch.value = true;
     postapi({
       goformId: "APN_PROC_EX",
@@ -450,7 +466,8 @@ function submitForm() {
                 <el-input id="wan_dial" v-model.number="ruleForm.wan_dial" disabled />
               </el-form-item>
               <el-form-item class="form-buttons">
-                <el-button type="success" v-if="is_add" @click="add_config">添加</el-button>
+                <el-button type="success" v-if="confindex != 0 && ruleForm.apn_mode == '手动'"
+                  @click="save(true)">保存</el-button>
                 <el-button type="primary" @click="submitForm()">应用</el-button>
                 <el-button type="danger" v-if="confindex != 0 && ruleForm.apn_mode == '手动'"
                   @click="delete_config">删除</el-button>
