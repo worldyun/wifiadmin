@@ -466,7 +466,7 @@ function submitForm() {
                 <el-input id="wan_dial" v-model.number="ruleForm.wan_dial" disabled />
               </el-form-item>
               <el-form-item class="form-buttons">
-                <el-button type="success" v-if="confindex != 0 && ruleForm.apn_mode == '手动'"
+                <el-button type="success" v-if="(confindex != 0 && ruleForm.apn_mode == '手动') || is_add == true"
                   @click="save(true)">保存</el-button>
                 <el-button type="primary" @click="submitForm()">应用</el-button>
                 <el-button type="danger" v-if="confindex != 0 && ruleForm.apn_mode == '手动'"
