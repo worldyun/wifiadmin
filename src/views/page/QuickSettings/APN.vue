@@ -282,7 +282,7 @@ function add_config() {
       pdp_select: "auto",
       index: oldlist.value.length + 1,
       wan_apn: ruleForm.apn_ipv4_apn,
-      ppp_auth_mode: ruleForm.pdp_type != '' ? ruleForm.pdp_type : "none",
+      ppp_auth_mode: ruleForm.ppp_auth_mode != '' ? ruleForm.ppp_auth_mode : "none",
       ppp_username: ruleForm.ppp_username,
       ppp_passwd: ruleForm.ppp_passwd
     }
@@ -297,7 +297,7 @@ function add_config() {
       pdp_select: "auto",
       index: oldlist.value.length + 1,
       ipv6_wan_apn: ruleForm.apn_ipv4_apn,
-      ipv6_ppp_auth_mode: ruleForm.pdp_type != '' ? ruleForm.pdp_type : "none",
+      ipv6_ppp_auth_mode: ruleForm.ppp_auth_mode != '' ? ruleForm.ppp_auth_mode : "none",
       ipv6_ppp_username: ruleForm.ppp_username,
       ipv6_ppp_passwd: ruleForm.ppp_passwd
     }
@@ -312,11 +312,11 @@ function add_config() {
       pdp_select: "auto",
       index: oldlist.value.length + 1,
       wan_apn: ruleForm.apn_ipv4_apn,
-      ppp_auth_mode: ruleForm.pdp_type != '' ? ruleForm.pdp_type : "none",
+      ppp_auth_mode: ruleForm.ppp_auth_mode != '' ? ruleForm.ppp_auth_mode : "none",
       ppp_username: ruleForm.ppp_username,
       ppp_passwd: ruleForm.ppp_passwd,
       ipv6_wan_apn: ruleForm.apn_ipv4_apn,
-      ipv6_ppp_auth_mode: ruleForm.pdp_type != '' ? ruleForm.pdp_type : "none",
+      ipv6_ppp_auth_mode: ruleForm.ppp_auth_mode != '' ? ruleForm.ppp_auth_mode : "none",
       ipv6_ppp_username: ruleForm.ppp_username,
       ipv6_ppp_passwd: ruleForm.ppp_passwd
     }
